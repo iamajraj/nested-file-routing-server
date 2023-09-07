@@ -22,8 +22,26 @@ class Router {
     const route = new Route(urlPath, filePath, page);
     this.routes.push(route);
   }
-  getRoutes() {
-    return this.routes;
+  routeExist(url) {
+    let exist = false;
+    for (let route of this.routes) {
+      if (route.urlPath === url) {
+        exist = true;
+        break;
+      }
+    }
+    return exist;
+  }
+
+  getRoute(url) {
+    let route = null;
+    for (let _route of this.routes) {
+      if (_route.urlPath === url) {
+        route = _route;
+        break;
+      }
+    }
+    return route;
   }
 }
 
@@ -63,21 +81,34 @@ const parseRoutes = (
 };
 
 parseRoutes();
-console.log(router.routes);
 
 const rootHTMLPath = path.join(root, 'index.html');
 const html = readFileSync(rootHTMLPath, { encoding: 'utf8' });
 
 const dom = htmlParser.parse(html);
-dom.getElementById('root').innerHTML = '<h1>Hello World</h1>';
 
-const server = http.createServer((req, res) => {
-  res.setHeader('Content-Type', 'text/html');
-  res.end(dom.toString(), (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+const server = http.createServer(async (req, res) => {
+  const route = router.getRoute(req.url);
+  if (route) {
+    const content = (await route.page).default().trim();
+    dom.getElementById('root').innerHTML = content;
+
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.end(dom.toString(), (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  } else {
+    res.statusCode = 404;
+    res.setHeader('Content-Type', 'text/html');
+    res.end('<h1>404 Not Found</h1>', (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
 });
 
 server.listen(3000, () => {
