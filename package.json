@@ -1,0 +1,13 @@
+{
+  "name": "parsing-routes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "servx": "cd ./servx && npm run-script dev src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
