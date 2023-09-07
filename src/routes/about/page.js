@@ -1,6 +1,7 @@
 const About = () => {
+  const calculate = 1 + 1;
   return `
-      <h1>Hello From AboutPage</h1>
+      <h1>Hello From AboutPage ${calculate}</h1>
   `;
 };
 

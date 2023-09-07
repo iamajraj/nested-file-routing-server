@@ -62,6 +62,7 @@ const parseRoutes = (
     if (file.isDirectory()) {
       parseRoutes(filePath, file.name);
     } else {
+      if (file.name !== 'page.js') return;
       const isRoot = path.basename(currentDir) === 'routes';
       const page = import(
         pathToFileURL(path.join(currentDir, file.name)).pathname
