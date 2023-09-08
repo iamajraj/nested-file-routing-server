@@ -7,5 +7,42 @@
   </head>
   <body>
     <main id="root"></main>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', addListenerToLinks);
+
+      window.addEventListener('popstate', (ev) => {
+        ev.preventDefault();
+        changeState(location.href);
+      });
+
+      function addListenerToLinks() {
+        window.removeEventListener('DOMContentLoaded', addListenerToLinks);
+        const links = document.links;
+        for (let i = 0; i < links.length; i++) {
+          console.log(i);
+          links[i].addEventListener('click', (ev) => {
+            ev.preventDefault();
+            changeState(links[i].href);
+          });
+        }
+      }
+
+      async function changeState(path) {
+        history.pushState(null, null, path);
+        await fetchData(path);
+      }
+
+      async function fetchData(path) {
+        const res = await fetch(path, {
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+        });
+        const data = await res.text();
+        document.getElementById('root').innerHTML = data;
+        addListenerToLinks();
+      }
+    </script>
   </body>
 </html>

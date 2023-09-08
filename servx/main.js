@@ -83,15 +83,23 @@ const server = http.createServer(async (req, res) => {
   const route = router.getRoute(req.url);
   if (route) {
     const content = (await route.page).default().trim();
-    dom.getElementById('root').innerHTML = content;
-
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/html');
-    res.end(dom.toString(), (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
+
+    if (req.headers['content-type'] === 'text/plain') {
+      res.end(content, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    } else {
+      res.setHeader('Content-Type', 'text/html');
+      dom.getElementById('root').innerHTML = content;
+      res.end(dom.toString(), (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
   } else {
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/html');
