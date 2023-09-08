@@ -22,16 +22,6 @@ class Router {
     const route = new Route(urlPath, filePath, page);
     this.routes.push(route);
   }
-  routeExist(url) {
-    let exist = false;
-    for (let route of this.routes) {
-      if (route.urlPath === url) {
-        exist = true;
-        break;
-      }
-    }
-    return exist;
-  }
 
   getRoute(url) {
     let route = null;
@@ -71,8 +61,9 @@ const parseRoutes = (
       if (isRoot) {
         router.push('/', filePath, page);
       } else {
-        const nestedRoute =
-          '/' + currentDir.slice(currentDir.indexOf('routes\\') + 7);
+        const nestedRoute = (
+          '/' + currentDir.slice(currentDir.indexOf('routes\\') + 7)
+        ).replaceAll('\\', '/');
         if (routeName) {
           router.push(nestedRoute, currentDir, page);
         }
